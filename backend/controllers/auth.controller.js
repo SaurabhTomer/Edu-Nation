@@ -41,7 +41,7 @@ export const signup = async (req, res) => {
     //generate tokken
     const token = await genToken(user._id);
     //setting toke in cookie
-    req.cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true,
       secue: false,
       sameSite: "Strict",
@@ -90,7 +90,7 @@ export const login = async (req, res) => {
     //generate tokken
     const token = await genToken(user._id);
     //setting toke in cookie
-    req.cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true,
       secue: false,
       sameSite: "Strict",
