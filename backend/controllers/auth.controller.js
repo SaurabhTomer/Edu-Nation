@@ -2,6 +2,80 @@ import User from "../models/user.model.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import { genToken } from "./../config/token.js";
+import { OAuth2Client } from 'google-auth-library';
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const client = new OAuth2Client(CLIENT_ID);
+
+//google auth
+export  const googleAuth = async(req, res) => {
+  try {
+    const { id_token, role } = req.body;
+    if (!id_token) {
+      return res.status(400).json({ ok: false, message: 'id_token required' });
+    }
+
+    // verify google id_token
+    const ticket = await client.verifyIdToken({
+       idToken: id_token,
+        audience: process.env.GOOGLE_CLIENT_ID ,
+      });
+
+    const payload = ticket.getPayload();
+
+    if (!payload) {
+      return res.status(401).json({ ok: false, message: 'Invalid token' });
+    }
+
+    // You may require verified email:
+    if (!payload.email_verified) {
+      return res.status(403).json({ ok: false,
+         message: 'Google email not verified' });
+    }
+//extract google profile data
+    const email = payload.email;
+    const name = payload.name || '';
+    const googleId = payload.sub;
+    const avatar = payload.picture;
+
+    // upsert(find or craete) user
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        role: role === role || 'student',
+        googleId,
+        avatar,
+      });
+ } 
+
+    // Generate Token 
+    const token = await genToken(user._id);
+    if (!token) {
+      return res.status(500).json({ message: "Token generation failed" });
+    }
+
+    // set cookie (optional) and return json
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.json({
+      message:"Login Successfully",
+      token,
+      user,
+    });
+  }  catch (error) {
+    console.log("Google auth error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 
 export const signup = async (req, res) => {
   try {
@@ -118,3 +192,4 @@ export const logout = async (req, res) => {
       .json({ success: false, message: `logout error ${error}` });
   }
 };
+

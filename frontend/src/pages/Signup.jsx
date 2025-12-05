@@ -1,5 +1,7 @@
 import  { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useGoogleSignup } from "../hooks/useGoogleSignup.js";
+import { FaGoogle } from "react-icons/fa";
 
 export default function SignUp() {
   const [name, setName] = useState('')
@@ -10,27 +12,25 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    // TODO: connect to your backend API (axios/fetch) to create user
-    try {
-      console.log({ name, email, password, role })
-      // Example: await axios.post(`${serverUrl}/api/auth/signup`, { name, email, password, role })
-      // on success: navigate('/')
-      setTimeout(() => {
-        setLoading(false)
-        navigate('/')
-      }, 800)
-    } catch (err) {
-      console.error(err)
-      setLoading(false)
-    }
+ 
+
+
+ 
+ 
+
+  const handleGoogleSuccess = (data) => {
+    navigate('/')
   }
 
-  const handleGoogle = async () => {
-    // TODO: wire up Google sign-in (Firebase / OAuth)
-    console.log('google sign in')
+  const { signupWithGoogle } = useGoogleSignup(handleGoogleSuccess, role)
+
+  const handleSignup = (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setTimeout(() => {
+      setLoading(false)
+      navigate('/')
+    }, 300)
   }
 
   return (
@@ -38,7 +38,7 @@ export default function SignUp() {
       <div className="w-1/3 max-w-5xl h-auto rounded-2xl shadow-2xl overflow-hidden flex">
         {/* Left side - form */}
         <div className="w-full bg-white p-8 flex items-center justify-center">
-          <form className="w-full max-w-md">
+          <form className="w-full max-w-md" onSubmit={handleSignup}>
             <h1 className="text-2xl font-semibold text-black">Create your account</h1>
             <p className="text-sm text-gray-500 mt-1">Sign up to get access to all courses</p>
 
@@ -117,9 +117,9 @@ export default function SignUp() {
 
             <button
               type="button"
-              onClick={handleGoogle}
+              onClick={signupWithGoogle}
               className="w-full mt-4 h-10 rounded border flex items-center justify-center gap-3 cursor-pointer"
-            >
+            ><FaGoogle />
              
               Continue with Google
             </button>

@@ -1,11 +1,13 @@
 import  { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useGoogleSignup } from "../hooks/useGoogleSignup.js";
+import { FaGoogle } from "react-icons/fa";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 export default function Login() {
-  const [name, setName] = useState('')
+ 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [role, setRole] = useState('student')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -13,9 +15,12 @@ export default function Login() {
  
   return (
     <div className="min-h-screen bg-[#eae7e7] flex items-center justify-center p-8">
+      
       <div className="w-1/3 max-w-5xl h-auto rounded-2xl shadow-2xl overflow-hidden flex">
+      
         {/* Left side - form */}
         <div className="w-full bg-white p-8 flex items-center justify-center">
+         
           <form className="w-full max-w-md">
             <h1 className="text-2xl font-semibold text-black">Get back to Your Account</h1>
 
@@ -57,6 +62,10 @@ export default function Login() {
               {loading ? 'Getting...' : 'Sign In'}
             </button>
 
+
+            <span className='text-[13px] cursor-pointer text-[#585757] ml-80' 
+            onClick={navigate('/forgot-password')}> Forget Password ? </span>
+
             <div className="flex items-center gap-3 mt-6">
               <div className="flex-1 h-px bg-[#e3e3e3]" />
               <div className="text-sm text-gray-500">Or continue with</div>
@@ -65,9 +74,10 @@ export default function Login() {
 
             <button
               type="button"
-              onClick={handleGoogle}
+              
               className="w-full mt-4 h-10 rounded border flex items-center justify-center gap-3 cursor-pointer"
             >
+              <FaGoogle />
              
               Sign In with Google
             </button>

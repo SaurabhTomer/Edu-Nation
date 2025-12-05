@@ -13,6 +13,9 @@ import mongoose from "mongoose";
         required:true,
         unique:true
     },
+     googleId: { 
+        type: String 
+    },
     password:{
         type:String,
     },
@@ -21,7 +24,7 @@ import mongoose from "mongoose";
         enum:["student" , "educator"],
         default:"Student",
     },
-    photoUrl:{
+    avatar:{
         type:String,
         default:""
     },

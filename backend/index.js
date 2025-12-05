@@ -5,7 +5,7 @@ import { connectDB } from './config/connectDB.js';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.route.js';
 
-const port = process.env.PORT
+const port = process.env.PORT || 5000
 const app  = express()
 
 //middleware

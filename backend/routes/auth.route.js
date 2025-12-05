@@ -1,5 +1,5 @@
 import express from 'express'
-import { login, logout, signup } from '../controllers/auth.controller.js'
+import { login, logout, signup ,googleAuth } from '../controllers/auth.controller.js'
 import { isAuth } from '../middlewares/auth.middleware.js'
 
 const authRouter = express.Router()
@@ -8,5 +8,7 @@ const authRouter = express.Router()
 authRouter.post('/signup' , isAuth,signup)
 authRouter.post('/login' ,isAuth, login)
 authRouter.get('/logout' ,isAuth, logout)
+//no midddleware in it
 
+authRouter.post("/google", googleAuth);
 export default authRouter
