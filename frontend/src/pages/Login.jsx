@@ -1,6 +1,5 @@
 import  { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useGoogleSignup } from "../hooks/useGoogleSignup.js";
 import { FaGoogle } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
@@ -64,7 +63,7 @@ export default function Login() {
 
 
             <span className='text-[13px] cursor-pointer text-[#585757] ml-80' 
-            onClick={navigate('/forgot-password')}> Forget Password ? </span>
+            > Forget Password ? </span>
 
             <div className="flex items-center gap-3 mt-6">
               <div className="flex-1 h-px bg-[#e3e3e3]" />

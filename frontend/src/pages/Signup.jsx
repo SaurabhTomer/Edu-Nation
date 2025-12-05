@@ -1,48 +1,69 @@
-import  { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useGoogleSignup } from "../hooks/useGoogleSignup.js";
 import { FaGoogle } from "react-icons/fa";
+import axios from "axios";
+import { serverUrl } from "../App.jsx";
+import { toast } from "react-toastify";
 
 export default function SignUp() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [role, setRole] = useState('student')
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
-
- 
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("student");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
 
- 
- 
+  // handle signup manual
+  const handleSignUp = async () => {
+    try {
+      const result = await axios.post(
+        serverUrl + "/api/auth/signup",
+        { name, password, email, role },
+        { withCredentials: true }
+      );
+
+      console.log(result.data);
+      navigate("/");
+      toast.done(" Signup successfully");
+    } catch (error) {
+      console.log("signup error:", error);
+      toast.error("Signup error");
+    }
+  };
 
   const handleGoogleSuccess = (data) => {
-    navigate('/')
-  }
+    navigate("/");
+  };
 
-  const { signupWithGoogle } = useGoogleSignup(handleGoogleSuccess, role)
+  const { signupWithGoogle } = useGoogleSignup(handleGoogleSuccess, role);
 
   const handleSignup = (e) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
     setTimeout(() => {
-      setLoading(false)
-      navigate('/')
-    }, 300)
-  }
+      setLoading(false);
+      navigate("/");
+    }, 300);
+  };
 
   return (
     <div className="min-h-screen bg-[#eae7e7] flex items-center justify-center p-8">
       <div className="w-1/3 max-w-5xl h-auto rounded-2xl shadow-2xl overflow-hidden flex">
-        {/* Left side - form */}
         <div className="w-full bg-white p-8 flex items-center justify-center">
           <form className="w-full max-w-md" onSubmit={handleSignup}>
-            <h1 className="text-2xl font-semibold text-black">Create your account</h1>
-            <p className="text-sm text-gray-500 mt-1">Sign up to get access to all courses</p>
+            <h1 className="text-2xl font-semibold text-black">
+              Create your account
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Sign up to get access to all courses
+            </p>
 
-            <label className="block mt-6 text-sm font-medium text-gray-700">Name</label>
+            <label className="block mt-6 text-sm font-medium text-gray-700">
+              Name
+            </label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -51,7 +72,9 @@ export default function SignUp() {
               placeholder="Your full name"
             />
 
-            <label className="block mt-4 text-sm font-medium text-gray-700">Email</label>
+            <label className="block mt-4 text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -61,10 +84,12 @@ export default function SignUp() {
               placeholder="you@example.com"
             />
 
-            <label className="block mt-4 text-sm font-medium text-gray-700">Password</label>
+            <label className="block mt-4 text-sm font-medium text-gray-700">
+              Password
+            </label>
             <div className="relative">
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -77,7 +102,7 @@ export default function SignUp() {
                 onClick={() => setShowPassword((s) => !s)}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500"
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? "Hide" : "Show"}
               </button>
             </div>
 
@@ -86,15 +111,23 @@ export default function SignUp() {
               <div className="flex gap-3 mt-2">
                 <button
                   type="button"
-                  onClick={() => setRole('student')}
-                  className={`px-3 py-1 rounded-full cursor-pointer border ${role === 'student' ? 'border-black bg-black text-white' : 'border-gray-300 text-gray-700'}`}
+                  onClick={() => setRole("student")}
+                  className={`px-3 py-1 rounded-full cursor-pointer border ${
+                    role === "student"
+                      ? "border-black bg-black text-white"
+                      : "border-gray-300 text-gray-700"
+                  }`}
                 >
                   Student
                 </button>
                 <button
                   type="button"
-                  onClick={() => setRole('educator')}
-                  className={`px-3 py-1  cursor-pointer rounded-full border ${role === 'educator' ? 'border-black bg-black text-white' : 'border-gray-300 text-gray-700'}`}
+                  onClick={() => setRole("educator")}
+                  className={`px-3 py-1  cursor-pointer rounded-full border ${
+                    role === "educator"
+                      ? "border-black bg-black text-white"
+                      : "border-gray-300 text-gray-700"
+                  }`}
                 >
                   Educator
                 </button>
@@ -106,7 +139,7 @@ export default function SignUp() {
               disabled={loading}
               className="w-full mt-6 h-10 rounded bg-black text-white flex items-center justify-center disabled:opacity-60 cursor-pointer"
             >
-              {loading ? 'Creating...' : 'Sign Up'}
+              {loading ? "Creating..." : "Sign Up"}
             </button>
 
             <div className="flex items-center gap-3 mt-6">
@@ -119,22 +152,20 @@ export default function SignUp() {
               type="button"
               onClick={signupWithGoogle}
               className="w-full mt-4 h-10 rounded border flex items-center justify-center gap-3 cursor-pointer"
-            ><FaGoogle />
-             
+            >
+              <FaGoogle />
               Continue with Google
             </button>
 
             <p className="text-sm text-gray-600 text-center mt-4">
-              Already have an account?{' '}
+              Already have an account?{" "}
               <Link to="/login" className="text-black underline cursor-pointer">
                 Login
               </Link>
             </p>
           </form>
         </div>
-
-       
       </div>
     </div>
-  )
+  );
 }
