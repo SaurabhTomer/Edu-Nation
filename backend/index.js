@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.route.js';
 import cors from 'cors';
 
-const port = process.env.PORT || 5000
+const port = process.env.PORT;
 const app  = express()
 
 //middleware

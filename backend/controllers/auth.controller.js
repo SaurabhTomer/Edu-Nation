@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
-import { genToken } from "./../config/token.js";
+import jwt from 'jsonwebtoken'
 import { OAuth2Client } from 'google-auth-library';
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
@@ -41,14 +41,15 @@ export  const googleAuth = async(req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
+      const normalizedRole = role === 'educator' || role === 'student' ? role : 'student';
       user = await User.create({
         name,
         email,
-        role: role === role || 'student',
+        role: normalizedRole,
         googleId,
         avatar,
       });
- } 
+ }
 
     // Generate Token 
     const token = await genToken(user._id);
@@ -113,18 +114,27 @@ export const signup = async (req, res) => {
       password: hashPassword,
     });
     //generate tokken
-    const token = await genToken(user._id);
-    //setting toke in cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secue: false,
-      sameSite: "Strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-    //retunr res
+     const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    //setting tok(en) in cookie
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,      // required with sameSite: "none"
+    sameSite: "none",  // allow cross-site cookie
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+    //return res
     return res
       .status(201)
-      .json({ success: true, message: "User created ", user });
+      .json({ success: true, message: "User created ", user:{
+        name:user.name,
+        email:user.email,
+        role:user.role
+      } });
   } catch (error) {
     return res
       .status(500)
@@ -147,14 +157,14 @@ export const login = async (req, res) => {
     //check user exists
     let user = await User.findOne({ email });
 
-    if (user) {
+    if (!user) {
       return res
-        .status(400)
-        .json({ success: false, message: "User already exists" });
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     // match pass
-    const decodePass = await bcrypt.compare(user.password, password);
+    const decodePass = await bcrypt.compare(password, user.password);
     if (!decodePass) {
       return res
         .status(400)
@@ -166,15 +176,15 @@ export const login = async (req, res) => {
     //setting toke in cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secue: false,
-      sameSite: "Strict",
+      secure: false,
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     //retunr res
     return res
       .status(200)
-      .json({ success: true, message: "Login success ", user });
+      .json({ success: true, message: "Login success ", token, user });
   } catch (error) {
     return res
       .status(500)

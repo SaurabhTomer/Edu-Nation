@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useGoogleSignup } from "../hooks/useGoogleSignup.js";
 import { FaGoogle } from "react-icons/fa";
 import axios from "axios";
 import { serverUrl } from "../App.jsx";
 import { toast } from "react-toastify";
+import { useGoogleSignup } from "../hooks/useGoogleSignup";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -14,46 +14,47 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-
-  // handle signup manual
-  const handleSignUp = async () => {
-    try {
-      const result = await axios.post(
-        serverUrl + "/api/auth/signup",
-        { name, password, email, role },
-        { withCredentials: true }
-      );
-
-      console.log(result.data);
+  const { signupWithGoogle } = useGoogleSignup(
+    (data) => {
+      console.log("Google signup success:", data);
+      toast.success(" Signup successfully");
       navigate("/");
-      toast.done(" Signup successfully");
-    } catch (error) {
-      console.log("signup error:", error);
-      toast.error("Signup error");
-    }
-  };
+    },
+    role
+  );
 
-  const handleGoogleSuccess = (data) => {
-    navigate("/");
-  };
 
-  const { signupWithGoogle } = useGoogleSignup(handleGoogleSuccess, role);
+const handleSignUp = async (e) => {
+  e.preventDefault();           // 1️⃣ Prevents page reload
+  setLoading(true);             // 2️⃣ Shows loading state
 
-  const handleSignup = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate("/");
-    }, 300);
-  };
+  try {
+    const result = await axios.post(
+      serverUrl + "/api/auth/signup",   // 3️⃣ Sends request to backend
+      { name, password, email, role },  // 4️⃣ Data sent in body
+      { withCredentials: true }         // 5️⃣ Allows cookies (JWT etc.)
+    );
+
+    console.log(result.data);
+    navigate("/");               // 6️⃣ Redirect to home after signup
+    toast.success("Signup successfully");
+  } catch (error) {
+    const msg = error?.response?.data?.message || error?.response?.data || error.message;
+    console.log("signup error:", msg, error);
+    toast.error(`Signup error: ${msg}`);
+  } finally {
+    setLoading(false);           // 7️⃣ Stop loading
+  }
+};
+
+
+  
 
   return (
-    <div className="min-h-screen bg-[#eae7e7] flex items-center justify-center p-8">
-      <div className="w-1/3 max-w-5xl h-auto rounded-2xl shadow-2xl overflow-hidden flex">
+    <div className="min-h-screen  bg-[#eae7e7] flex items-center justify-center p-8">
+      <div className=" max-w-5xl h-auto rounded-2xl shadow-2xl overflow-hidden flex">
         <div className="w-full bg-white p-8 flex items-center justify-center">
-          <form className="w-full max-w-md" onSubmit={handleSignup}>
+          <form className="w-full max-w-md" onSubmit={handleSignUp}>
             <h1 className="text-2xl font-semibold text-black">
               Create your account
             </h1>
@@ -93,7 +94,7 @@ export default function SignUp() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                minLength={6}
+                minLength={8}
                 className="mt-2 w-full h-10 rounded border border-[#e7e6e6] px-3 pr-10 focus:outline-none focus:ring-2 focus:ring-gray-200"
                 placeholder="Enter a password"
               />

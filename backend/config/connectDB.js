@@ -1,13 +1,10 @@
-import mongoose from "mongoose";
 import dotenv from'dotenv'
 dotenv.config();
+import mongoose from "mongoose";
 
 export const connectDB = async () => {
     try {
-        // console.log(process.env.MONGODB_URL);
-        if (!process.env.MONGODB_URL) {
-            throw new Error('MONGODB_URL is not set in environment');
-        }
+       
         await mongoose.connect(process.env.MONGODB_URL);
         console.log("DataBase connected");
         

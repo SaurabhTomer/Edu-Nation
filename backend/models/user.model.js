@@ -18,6 +18,7 @@ import mongoose from "mongoose";
     },
     password:{
         type:String,
+        select:false,
     },
     role:{
         type:String,
