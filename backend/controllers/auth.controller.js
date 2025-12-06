@@ -141,54 +141,77 @@ export const signup = async (req, res) => {
       .json({ success: false, message: `Sign up error ${error}` });
   }
 };
-
 export const login = async (req, res) => {
   try {
-    //fetching
     const { email, password } = req.body;
 
-    //check email format
+    // Check required fields
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and Password are required",
+      });
+    }
+
+    // Validate email format
     if (!validator.isEmail(email)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Enter valid Email" });
+      return res.status(400).json({
+        success: false,
+        message: "Enter a valid Email",
+      });
     }
 
-    //check user exists
-    let user = await User.findOne({ email });
-
+    // Check if user exists
+    const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    // match pass
-    const decodePass = await bcrypt.compare(password, user.password);
-    if (!decodePass) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Incorrect Password" });
+    // Match password
+    const isMatch =  bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Incorrect password",
+      });
     }
 
-    //generate tokken
-    const token = await genToken(user._id);
-    //setting toke in cookie
+    // Generate token
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
+      secure: false, // true only in production
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    //retunr res
-    return res
-      .status(200)
-      .json({ success: true, message: "Login success ", token, user });
+   
+
+    // Response
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user: {
+        email:user.email,
+        role:user.role,
+        user:user.name
+      },
+    });
+
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: `login  error ${error}` });
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Login error",
+    });
   }
 };
 
