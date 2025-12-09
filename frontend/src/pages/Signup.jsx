@@ -32,7 +32,7 @@ const handleSignUp = async (e) => {
       { withCredentials: true }         // 5️⃣ Allows cookies (JWT etc.)
     );
 
-    // console.log(result.data);
+    console.log(result.data);
     dispatch(setUserData(result.data))
     navigate("/");               // 6️⃣ Redirect to home after signup
     toast.success("Signup successfully");
