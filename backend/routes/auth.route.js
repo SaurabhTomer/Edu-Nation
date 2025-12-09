@@ -5,8 +5,8 @@ import { isAuth } from '../middlewares/auth.middleware.js'
 const authRouter = express.Router()
 
 //auth routes
-authRouter.post('/signup' ,isAuth,signup)
-authRouter.post('/login' ,isAuth, login)
+authRouter.post('/signup' ,signup)
+authRouter.post('/login' , login)
 authRouter.get('/logout' ,isAuth, logout)
 //no midddleware in it
 

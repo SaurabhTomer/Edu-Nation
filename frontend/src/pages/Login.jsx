@@ -4,6 +4,8 @@ import { FaGoogle } from "react-icons/fa";
 import { serverUrl } from "./../App";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { setUserData } from "../redux/userSlice";
+import { useDispatch } from "react-redux";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,6 +13,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+   const dispatch = useDispatch()
 
   //login handle function
   const handleLogIn = async (e) => {
@@ -23,13 +27,14 @@ export default function Login() {
         { withCredentials: true }
       );
 
-      console.log(result.data);
+      // console.log(result.data);
+      dispatch(setUserData(result.data))
       // setLoading(false);
       navigate("/");
       toast.success("Login successfully");
     } catch (error) {
-      console.log("Login error", error);
-      toast.error("Login error");
+      // console.log("Login error", error);
+      toast.error("Login error" , error.response.data.message);
     }
   };
 

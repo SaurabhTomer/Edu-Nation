@@ -4,6 +4,8 @@ import { FaGoogle } from "react-icons/fa";
 import axios from "axios";
 import { serverUrl } from "../App.jsx";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice.js";
 
 
 export default function SignUp() {
@@ -14,6 +16,8 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const dispatch = useDispatch()
  
 
 
@@ -28,7 +32,8 @@ const handleSignUp = async (e) => {
       { withCredentials: true }         // 5️⃣ Allows cookies (JWT etc.)
     );
 
-    console.log(result.data);
+    // console.log(result.data);
+    dispatch(setUserData(result.data))
     navigate("/");               // 6️⃣ Redirect to home after signup
     toast.success("Signup successfully");
   } catch (error) {
