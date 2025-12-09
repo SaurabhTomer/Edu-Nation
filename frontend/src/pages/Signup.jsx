@@ -4,7 +4,7 @@ import { FaGoogle } from "react-icons/fa";
 import axios from "axios";
 import { serverUrl } from "../App.jsx";
 import { toast } from "react-toastify";
-import { useGoogleSignup } from "../hooks/useGoogleSignup";
+
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -14,14 +14,7 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { signupWithGoogle } = useGoogleSignup(
-    (data) => {
-      console.log("Google signup success:", data);
-      toast.success(" Signup successfully");
-      navigate("/");
-    },
-    role
-  );
+ 
 
 
 const handleSignUp = async (e) => {
@@ -40,7 +33,7 @@ const handleSignUp = async (e) => {
     toast.success("Signup successfully");
   } catch (error) {
     const msg = error?.response?.data?.message || error?.response?.data || error.message;
-    console.log("signup error:", msg, error);
+    // console.log("signup error:", msg, error);
     toast.error(`Signup error: ${msg}`);
   } finally {
     setLoading(false);           // 7️⃣ Stop loading
@@ -151,7 +144,7 @@ const handleSignUp = async (e) => {
 
             <button
               type="button"
-              onClick={signupWithGoogle}
+              // onClick={signupWithGoogle}
               className="w-full mt-4 h-10 rounded border flex items-center justify-center gap-3 cursor-pointer"
             >
               <FaGoogle />
