@@ -16,7 +16,7 @@ export const isAuth = (req, res, next) => {
     }
 
     // Save user ID from token payload
-    req.userId = decoded.id;   // ✅ correct key
+    req.userId = decoded.id;  
 
     next();
   } catch (error) {

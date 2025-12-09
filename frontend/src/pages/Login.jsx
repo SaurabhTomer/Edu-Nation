@@ -12,13 +12,14 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  //login handle function
   const handleLogIn = async (e) => {
-    
-    setLoading(true)
+    setLoading(true);
 
     try {
-      const result = await axios.post(serverUrl + "/api/auth/login",
-        { email , password },
+      const result = await axios.post(
+        serverUrl + "/api/auth/login",
+        { email, password },
         { withCredentials: true }
       );
 
@@ -26,10 +27,8 @@ export default function Login() {
       // setLoading(false);
       navigate("/");
       toast.success("Login successfully");
-
     } catch (error) {
       console.log("Login error", error);
-
       toast.error("Login error");
     }
   };
@@ -39,7 +38,10 @@ export default function Login() {
       <div className="w-2/3 max-w-5xl h-auto rounded-2xl shadow-2xl overflow-hidden flex">
         {/* Left side - form */}
         <div className="w-full bg-white p-8 flex items-center justify-center">
-          <form className="w-full max-w-md" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="w-full max-w-md"
+            onSubmit={(e) => e.preventDefault()}
+          >
             <h1 className="text-2xl font-semibold text-black">
               Get back to Your Account
             </h1>

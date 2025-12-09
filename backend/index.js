@@ -5,6 +5,7 @@ import { connectDB } from './config/connectDB.js';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.route.js';
 import cors from 'cors';
+import userRouter from './routes/user.route.js';
 
 const port = process.env.PORT;
 const app  = express()
@@ -17,8 +18,10 @@ app.use(cors({
     credentials:true
 }))
 
-//routes api
+// auth routes api
 app.use('/api/auth' , authRouter);
+//user api route
+app.use('/api/user' , userRouter);
 
 
 
