@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/HOME";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
@@ -6,6 +6,8 @@ import {ToastContainer} from 'react-toastify';
 import GetCurrentUser from "../customHooks/GetCurrentUser";
 import { useSelector } from "react-redux";
 import Profile from "./pages/Profile";
+import ForgetPassword from "./pages/ForgetPassword";
+
 
 
  export const serverUrl = "http://localhost:8000"
@@ -23,9 +25,10 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/signup" element={ !userData ?   <Signup /> : <Navigate to={"/"} /> } />
         <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={ userData ? <Profile /> : <Navigate to={"/signup"} /> } />
+        <Route path="/forget" element={ userData ? <ForgetPassword /> : <Navigate to={"/"} /> } />
         
       </Routes>
     </>

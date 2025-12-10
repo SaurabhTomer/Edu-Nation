@@ -92,9 +92,10 @@ export default function Login() {
               {loading ? "Getting..." : "Sign In"}
             </button>
 
-            <span className="text-[13px] cursor-pointer text-[#585757] ml-80">
-              {" "}
-              Forget Password ?{" "}
+            <span className="text-[13px] cursor-pointer text-[#585757] ml-80" 
+            onClick={() => navigate("/forget")} >
+             
+              Forget Password ?
             </span>
 
             <div className="flex items-center gap-3 mt-6">
