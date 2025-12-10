@@ -70,7 +70,7 @@ function Nav() {
 
           {show && (
             <div>
-              <span>My Profile</span>
+              <span onClick={ () => navigate("/profile")} >My Profile</span>
               <span>My Courses</span>
             </div>
           )}
@@ -91,7 +91,7 @@ function Nav() {
 
 
 
-            <div>My Profile </div>
+            <div onClick={() => navigate("/profile")}> My Profile </div>
             <div>My Courses </div>
            {/* { userData?.role === "educator" && <div>Dashboard</div>} */}
             {!userData ? (
