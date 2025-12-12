@@ -55,6 +55,9 @@ export const updateProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    //save user
+    await user.save();
+
     // Successfully updated profile
     return res.status(200).json({
       message: "Profile updated successfully",

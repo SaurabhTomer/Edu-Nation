@@ -7,6 +7,7 @@ import GetCurrentUser from "../customHooks/GetCurrentUser";
 import { useSelector } from "react-redux";
 import Profile from "./pages/Profile";
 import ForgetPassword from "./pages/ForgetPassword";
+import EditProfile from "./pages/EditProfile";
 
 
 
@@ -28,7 +29,8 @@ const App = () => {
         <Route path="/signup" element={ !userData ?   <Signup /> : <Navigate to={"/"} /> } />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={ userData ? <Profile /> : <Navigate to={"/signup"} /> } />
-        <Route path="/forget" element={ userData ? <ForgetPassword /> : <Navigate to={"/"} /> } />
+        <Route path="/forget" element={ userData ? <ForgetPassword /> : <Navigate to={"/signup"} /> } />
+        <Route path="/editprofile" element={ userData ? <EditProfile /> : <Navigate to={"/signup"} /> } />
         
       </Routes>
     </>

@@ -9,7 +9,7 @@ function Profile() {
   return (
     <div>
       <div>
-        <IoArrowBackSharp onClick={navigate("/home")} />
+        <IoArrowBackSharp onClick={ () =>  navigate("/home")} />
 
         <div>
           {userData?.photoUrl ? (
@@ -40,7 +40,7 @@ function Profile() {
 
         </div>
         <div>
-          <button>
+          <button  onClick={() => navigate("/editprofile")}>
             Edit Profile 
           </button>
         </div>
