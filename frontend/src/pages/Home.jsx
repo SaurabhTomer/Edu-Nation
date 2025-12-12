@@ -26,8 +26,8 @@ function Home() {
             <img src={ai1} />{" "}
           </button>
         </div>
-        <Logos/>
       </div>
+        <Logos/>
     </div>
   );
 }
