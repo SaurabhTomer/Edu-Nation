@@ -289,7 +289,7 @@ export const ResetPassword = async (req, res) => {
   try {
 
     //fetch email and password
-    const { email , password , confirmPassword } = req.body;
+    const { email , password  } = req.body;
 
      //find user
     const user = await User.findOne({ email });
@@ -301,9 +301,9 @@ export const ResetPassword = async (req, res) => {
 
 
     //check 
-    if (password != confirmPassword) {
-      return res.status(404).json({ message: "Password are not matched" });
-    }
+    // if (password != confirmPassword) {
+    //   return res.status(404).json({ message: "Password are not matched" });
+    // }
 
     const hashPassword = await bcrypt.hash( password , 10);
 

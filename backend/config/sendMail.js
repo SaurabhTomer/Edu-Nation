@@ -1,5 +1,6 @@
-import {createTransport} from 'nodemailer';
-import dotenv from dotenv;
+
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
 dotenv.config();
 
 
@@ -20,7 +21,7 @@ const transporter = nodemailer.createTransport({
         from: process.env.EMAIL,
         to : to,
         subject : "Reset your password",
-        html:<p> Your OTP for Password Reset is <b> ${otp} </b>
-        IT expires in 5 minutes</p>
+        html:`<p> Your OTP for Password Reset is <b> ${otp} </b>
+        IT expires in 5 minutes</p>`
     })
 }
