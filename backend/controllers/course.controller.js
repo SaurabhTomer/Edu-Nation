@@ -22,4 +22,17 @@ export const createCourse = async (req , res) => {
     }
 }
 
-export 
+export const getPublishedCourse = async (req , res) => {
+    try {
+        
+        const Courses = await Course.find({isPublished : true})
+
+         if( !Courses){
+            return res.status(400).json({message:"Courses not found"})
+        }
+
+         return res.status(200).json({message:"Courses fetched " , Courses})
+    } catch (error) {
+          return res.status(500).json({message:"get published course error" , error})
+    }
+}
