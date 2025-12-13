@@ -1,5 +1,6 @@
-import { Course } from "../models/course.model.js";
+import { Course, Course } from "../models/course.model.js";
 import { uploadOnCloudinary } from "./../config/claudinary.js";
+import { Course } from "./../models/course.model";
 
 export const createCourse = async (req, res) => {
   try {
@@ -81,7 +82,7 @@ export const editCourse = async (req, res) => {
       isPublished,
     } = req.body;
 
-    //took file like this 
+    //took file like this
     let thumbnail;
 
     //if file is not their
@@ -115,5 +116,45 @@ export const editCourse = async (req, res) => {
     return res.status(200).json({ message: "Courses edited  ", course });
   } catch (error) {
     return res.status(500).json({ message: "Course edited error", error });
+  }
+};
+
+export const getCourseById = async (req, res) => {
+  try {
+    //fetch courseid from params
+    const { courseId } = req.params;
+
+    //search by id
+    const Courses = await Course.findById({ courseId });
+
+    if (!Courses) {
+      return res.status(400).json({ message: "Course is not found" });
+    }
+
+    //send course in response
+    return res.status(200).json({ message: "Courses finded  ", Courses });
+  } catch (error) {
+    return res.status(500).json({ message: "Course finding error", error });
+  }
+};
+
+export const deleteCourse = async (req, res) => {
+  try {
+    //fetch courseid from params
+    const { courseId } = req.params;
+
+    //search by id
+    const Courses = await Course.findById({ courseId });
+
+    if (!Courses) {
+      return res.status(400).json({ message: "Course is not found" });
+    }
+
+    //delete course
+    Courses = await Course.findByIdAndDelete(courseId, { new: true });
+
+    return res.status(200).json({ message: "Courses deletion success  " });
+  } catch (error) {
+    return res.status(500).json({ message: "Course deletion error", error });
   }
 };
