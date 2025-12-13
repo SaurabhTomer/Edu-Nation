@@ -1,112 +1,132 @@
-import { IoArrowBackSharp } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
-import { serverUrl } from "../App";
-import { setUserData } from "../redux/userSlice";
-import { toast } from "react-toastify";
-import ClipLoader from "react-spinners/ClipLoader";
+import axios from 'axios'
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { serverUrl } from '../App'
+import { setUserData } from '../redux/userSlice'
+import { toast } from 'react-toastify'
+import { ClipLoader } from 'react-spinners'
+import { useNavigate } from 'react-router-dom'
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 function EditProfile() {
-  const navigate = useNavigate();
-  const { userData } = useSelector((state) => state.user);
+     let {userData} = useSelector(state=>state.user)
+     let [name,setName] = useState(userData.name || "")
+     let [description,setDescription] = useState(userData.description || "")
+     let [photoUrl,setPhotoUrl] = useState(null)
+     let dispatch = useDispatch()
+     let [loading,setLoading] = useState(false)
+     let navigate = useNavigate()
 
-  const [name, setName] = useState(userData.name || "");
-  const [description, setDescription] = useState(userData.description || "");
-  const [photoUrl, setPhotoUrl] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const dispatch = useDispatch();
-
-
-  //image is send in formdata only
-  const formData = new FormData();
-  formData.append("name", name);
-  formData.append("description", description);
-  formData.append("photoUrl", photoUrl);
+      const formData = new FormData()
+      formData.append("name",name)
+      formData.append("description",description)
+      formData.append("photoUrl",photoUrl)
 
 
-  //handle edit function
-  const handleEditProfile = async () => {
-    setLoading(true);
-    try {
-      const result = await axios.post(
-        `${serverUrl}/api/user/profile`,
-        { formData },
-        { withCredentials: true }
-      );
-      dispatch(setUserData(result.data))
-      setLoading(false)
-      navigate("/")
-      toast.success("Profile Updated")
-    } catch (error) {
+
+     const updateProfile = async () => {
+      setLoading(true)
+      try {
+        const result = await axios.post(serverUrl + "/api/user/updateprofile" ,formData , {withCredentials:true} )
+        console.log(result.data)
+        dispatch(setUserData(result.data))
+        navigate("/")
         setLoading(false)
-        toast.error("Update profile error")
-        console.log(error);
+      
+        toast.success("Profile Update Successfully")
         
-    }
-  };
 
+        
+      } catch (error) {
+        console.log(error)
+        toast.error("Profile Update Error")
+        setLoading(false)
+      }
+      
+     }
   return (
-    <div>
-      <div>
-        <IoArrowBackSharp onClick={() => navigate("/profile")} />
-        <h2>Edit Profile</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-10">
+      <div className="bg-white rounded-2xl shadow-lg p-8 max-w-xl w-full relative">
+        <FaArrowLeftLong  className='absolute top-[5%] left-[5%] w-[22px] h-[22px] cursor-pointer' onClick={()=>navigate("/profile")}/>
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Edit Profile</h2>
 
-        <form onSubmit={(e) => e.preventDefault()}>
-          <div>
-            {userData?.photoUrl ? (
-              <img src={userData?.photoUrl} alt="" />
-            ) : (
-              <div>{userData?.name.slice(0, 1).toUppercase()}</div>
-            )}
+        <form  className="space-y-5" onSubmit={(e)=>e.preventDefault()}>
+          {/* Profile Photo */}
+          
+           <div className="flex flex-col items-center text-center">
+          {userData.photoUrl ? <img
+            src={userData?.photoUrl}
+            alt=""
+            className="w-24 h-24 rounded-full object-cover border-4 border-[black]"
+          /> : <div className='w-24 h-24 rounded-full text-white flex items-center justify-center text-[30px] border-2 bg-black  border-white cursor-pointer'>
+         {userData?.name.slice(0,1).toUpperCase()}
+          </div>}
           </div>
-
           <div>
-            <label htmlFor="image">Select Avatar</label>
+            <label className="text-sm font-medium text-gray-700">Select Avatar</label>
             <input
               type="file"
-              id="image"
               name="photoUrl"
-              placeholder="PhotoUrl"
-              accept="image/*"
-              onChange={(e) => setPhotoUrl(e.target.files[0])}
+            
+              placeholder="Photo URL"
+              className="w-full px-4 py-2 border rounded-md text-sm "
+              onChange={(e)=>setPhotoUrl(e.target.files[0])}
             />
           </div>
 
+          {/* Name */}
           <div>
-            <label htmlFor="name">UserName</label>
+            <label className="text-sm font-medium text-gray-700">Full Name</label>
             <input
               type="text"
-              id="name"
+              name="name"
+              
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[black] placeholder:text-black"
               placeholder={userData.name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e)=>setName(e.target.value)}
               value={name}
             />
           </div>
 
-          {/* email cannot be chnaged thats why it is readonly */}
+          {/* Email (read-only) */}
           <div>
-            <label> Email </label>
-            <input type="text" readOnly placeholder={userData.email} />
+            <label className="text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              
+              readOnly
+              className="w-full mt-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-600 placeholder:text-black"
+              placeholder={userData.email}
+            />
           </div>
 
+         
+
+          {/* Description */}
           <div>
-            <label> Bio : </label>
-            <textPath
+            <label className="text-sm font-medium text-gray-700">Description</label>
+            <textarea
               name="description"
-              placeholder="tell us about yourself"
+             
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-[black]"
               rows={3}
-              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Tell us about yourself"
+              onChange={(e)=>setDescription(e.target.value)}
               value={description}
             />
           </div>
 
-          <button onClick={handleEditProfile}  >{loading ? <ClipLoader size={30} color="white" /> : "Save Changes" }</button>
+          {/* Save Button */}
+          <button
+            type="submit"
+            className="w-full bg-[black] active:bg-[#454545] text-white py-2 rounded-md font-medium transition cursor-pointer" disabled={loading} onClick={updateProfile}
+          >
+            {loading ? <ClipLoader size={30} color='white'/> : "Save Changes"}
+          </button>
         </form>
       </div>
     </div>
-  );
+  )
 }
 
-export default EditProfile;
+export default EditProfile

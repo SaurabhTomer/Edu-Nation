@@ -1,170 +1,168 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
+import React, { useState } from "react";
+import logo from "../assets/logo.jpg";
+import google from "../assets/google.jpg";
 import axios from "axios";
-import { serverUrl } from "../App.jsx";
+import { serverUrl } from "../App";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+
+import { MdRemoveRedEye } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+
+import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setUserData } from "../redux/userSlice.js";
-
-
-export default function SignUp() {
+import { setUserData } from "../redux/userSlice";
+function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  let [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  let dispatch = useDispatch();
 
-  const dispatch = useDispatch()
- 
+  const handleSignUp = async () => {
+    setLoading(true);
+    try {
+      const result = await axios.post(
+        serverUrl + "/api/auth/signup",
+        { name, email, password, role },
+        { withCredentials: true }
+      );
+      dispatch(setUserData(result.data));
 
-
-const handleSignUp = async (e) => {
-  e.preventDefault();           // 1️⃣ Prevents page reload
-  setLoading(true);             // 2️⃣ Shows loading state
-
-  try {
-    const result = await axios.post(
-      serverUrl + "/api/auth/signup",   // 3️⃣ Sends request to backend
-      { name, password, email, role },  // 4️⃣ Data sent in body
-      { withCredentials: true }         // 5️⃣ Allows cookies (JWT etc.)
-    );
-
-    console.log(result.data);
-    dispatch(setUserData(result.data))
-    navigate("/");               // 6️⃣ Redirect to home after signup
-    toast.success("Signup successfully");
-  } catch (error) {
-    const msg = error?.response?.data?.message || error?.response?.data || error.message;
-    // console.log("signup error:", msg, error);
-    toast.error(`Signup error: ${msg}`);
-  } finally {
-    setLoading(false);           // 7️⃣ Stop loading
-  }
-};
-
-
-  
+      navigate("/");
+      toast.success("SignUp Successfully");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      toast.error(error.response.data.message);
+    }
+  };
 
   return (
-    <div className="min-h-screen  bg-[#eae7e7] flex items-center justify-center p-8">
-      <div className=" max-w-5xl h-auto rounded-2xl shadow-2xl overflow-hidden flex">
-        <div className="w-full bg-white p-8 flex items-center justify-center">
-          <form className="w-full max-w-md" onSubmit={handleSignUp}>
-            <h1 className="text-2xl font-semibold text-black">
-              Create your account
+    <div className="bg-[#dddbdb] w-screen h-screen flex items-center justify-center flex-col gap-3">
+      <form
+        className="w-[90%] md:w-200 h-150 bg-[white] shadow-xl rounded-2xl flex"
+        onSubmit={(e) => e.preventDefault()}
+      >
+        <div className="md:w-[50%] w-full h-full flex flex-col items-center justify-center gap-3 ">
+          <div>
+            <h1 className="font-semibold text-[black] text-2xl">
+              Let's get Started
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Sign up to get access to all courses
-            </p>
-
-            <label className="block mt-6 text-sm font-medium text-gray-700">
+            <h2 className="text-[#999797] text-[18px]">Create your account</h2>
+          </div>
+          <div className="flex flex-col gap-1 w-[80%] items-start justify-center px-3">
+            <label htmlFor="name" className="font-semibold">
               Name
             </label>
             <input
-              value={name}
+              id="name"
+              type="text"
+              className="border w-full h-[35px] border-[#e7e6e6] text-[15px] px-5"
+              placeholder="Your name"
               onChange={(e) => setName(e.target.value)}
-              required
-              className="mt-2 w-full h-10 rounded border border-[#e7e6e6] px-3 focus:outline-none focus:ring-2 focus:ring-gray-200"
-              placeholder="Your full name"
+              value={name}
             />
-
-            <label className="block mt-4 text-sm font-medium text-gray-700">
+          </div>
+          <div className="flex flex-col gap-1 w-[80%] items-start justify-center px-3">
+            <label htmlFor="email" className="font-semibold">
               Email
             </label>
             <input
-              type="email"
-              value={email}
+              id="email"
+              type="text"
+              className="border w-full h-[35px] border-[#e7e6e6] text-[15px] px-5"
+              placeholder="Your email"
               onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mt-2 w-full h-10 rounded border border-[#e7e6e6] px-3 focus:outline-none focus:ring-2 focus:ring-gray-200"
-              placeholder="you@example.com"
+              value={email}
             />
-
-            <label className="block mt-4 text-sm font-medium text-gray-700">
+          </div>
+          <div className="flex flex-col gap-1 w-[80%] items-start justify-center px-3 relative">
+            <label htmlFor="password" className="font-semibold">
               Password
             </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={8}
-                className="mt-2 w-full h-10 rounded border border-[#e7e6e6] px-3 pr-10 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                placeholder="Enter a password"
+            <input
+              id="password"
+              type={show ? "text" : "password"}
+              className="border w-full h-[35px] border-[#e7e6e6] text-[15px] px-5"
+              placeholder="***********"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+            {!show && (
+              <MdOutlineRemoveRedEye
+                className="absolute w-5 h-5 cursor-pointer right-[5%] bottom-[10%]"
+                onClick={() => setShow((prev) => !prev)}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword((s) => !s)}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500"
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-
-            <div className="mt-4">
-              <div className="text-sm font-medium text-gray-700">Role</div>
-              <div className="flex gap-3 mt-2">
-                <button
-                  type="button"
-                  onClick={() => setRole("student")}
-                  className={`px-3 py-1 rounded-full cursor-pointer border ${
-                    role === "student"
-                      ? "border-black bg-black text-white"
-                      : "border-gray-300 text-gray-700"
-                  }`}
-                >
-                  Student
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRole("educator")}
-                  className={`px-3 py-1  cursor-pointer rounded-full border ${
-                    role === "educator"
-                      ? "border-black bg-black text-white"
-                      : "border-gray-300 text-gray-700"
-                  }`}
-                >
-                  Educator
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-6 h-10 rounded bg-black text-white flex items-center justify-center disabled:opacity-60 cursor-pointer"
+            )}
+            {show && (
+              <MdRemoveRedEye
+                className="absolute w-5 h-5 cursor-pointer right-[5%] bottom-[10%]"
+                onClick={() => setShow((prev) => !prev)}
+              />
+            )}
+          </div>
+          <div className="flex md:w-[50%] w-[70%] items-center justify-between">
+            <span
+              className={`px-2.5 py-[5px] border border-[#e7e6e6] rounded-2xl  cursor-pointer ${
+                role === "student" ? "border-black" : "border-[#646464]"
+              }`}
+              onClick={() => setRole("student")}
             >
-              {loading ? "Creating..." : "Sign Up"}
-            </button>
-
-            <div className="flex items-center gap-3 mt-6">
-              <div className="flex-1 h-px bg-[#e3e3e3]" />
-              <div className="text-sm text-gray-500">Or continue with</div>
-              <div className="flex-1 h-px bg-[#e3e3e3]" />
-            </div>
-
-            <button
-              type="button"
-              // onClick={signupWithGoogle}
-              className="w-full mt-4 h-10 rounded border flex items-center justify-center gap-3 cursor-pointer"
+              Student
+            </span>
+            <span
+              className={`px-2.5 py-[5px] border border-[#e7e6e6] rounded-2xl  cursor-pointer ${
+                role === "educator" ? "border-black" : "border-[#646464]"
+              }`}
+              onClick={() => setRole("educator")}
             >
-              <FaGoogle />
-              Continue with Google
-            </button>
+              Educator
+            </span>
+          </div>
+          <button
+            className="w-[80%] h-10 bg-black text-white cursor-pointer flex items-center justify-center rounded-[5px]"
+            disabled={loading}
+            onClick={handleSignUp}
+          >
+            {loading ? <ClipLoader size={30} color="white" /> : "Sign Up"}
+          </button>
 
-            <p className="text-sm text-gray-600 text-center mt-4">
-              Already have an account?{" "}
-              <Link to="/login" className="text-black underline cursor-pointer">
-                Login
-              </Link>
-            </p>
-          </form>
+          <div className="w-[80%] flex items-center gap-2">
+            <div className="w-[25%] h-[0.5px] bg-[#c4c4c4]"></div>
+            <div className="w-[50%] text-[15px] text-[#6f6f6f] flex items-center justify-center ">
+              Or continue with
+            </div>
+            <div className="w-[25%] h-[0.5px] bg-[#c4c4c4]"></div>
+          </div>
+          <div
+            className="w-[80%] h-10 border border-[black] rounded-[5px] flex items-center justify-center  "
+           
+          >
+            <img src={google} alt="" className="w-[25px]" />
+            <span className="text-[18px] text-gray-500">oogle</span>{" "}
+          </div>
+          <div className="text-[#6f6f6f]">
+            Already have an account?{" "}
+            <span
+              className="underline underline-offset-1 text-[black]"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </span>
+          </div>
         </div>
-      </div>
+        <div className="w-[50%] h-full rounded-r-2xl bg-[black] md:flex items-center justify-center flex-col hidden">
+          <img src={logo} className="w-30 shadow-2xl" alt="" />
+          <span className="text-[white] text-2xl">Edu Nation</span>
+        </div>
+      </form>
     </div>
   );
 }
+
+export default SignUp;

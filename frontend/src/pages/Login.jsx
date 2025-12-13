@@ -1,129 +1,143 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
-import { serverUrl } from "./../App";
+import React, { useState } from "react";
+import logo from "../assets/logo.jpg";
+import google from "../assets/google.jpg";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { setUserData } from "../redux/userSlice";
-import { useDispatch } from "react-redux";
+import { serverUrl } from "../App";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 
-export default function Login() {
+import { MdRemoveRedEye } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
+
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-   const dispatch = useDispatch()
-
-  //login handle function
-  const handleLogIn = async (e) => {
+  let [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  let dispatch = useDispatch();
+  const handleLogin = async () => {
     setLoading(true);
-
     try {
       const result = await axios.post(
         serverUrl + "/api/auth/login",
         { email, password },
         { withCredentials: true }
       );
-
-      // console.log(result.data);
-      dispatch(setUserData(result.data))
-      // setLoading(false);
+      dispatch(setUserData(result.data));
       navigate("/");
-      toast.success("Login successfully");
+      setLoading(false);
+      toast.success("Login Successfully");
     } catch (error) {
-      // console.log("Login error", error);
-      toast.error("Login error" , error.response.data.message);
+      console.log(error);
+      setLoading(false);
+      toast.error(error.response.data.message);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#eae7e7] flex items-center justify-center p-8">
-      <div className="w-2/3 max-w-5xl h-auto rounded-2xl shadow-2xl overflow-hidden flex">
-        {/* Left side - form */}
-        <div className="w-full bg-white p-8 flex items-center justify-center">
-          <form
-            className="w-full max-w-md"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <h1 className="text-2xl font-semibold text-black">
-              Get back to Your Account
+    <div className="bg-[#dddbdb] w-screen h-screen flex items-center justify-center flex-col gap-3">
+      <form
+        className="w-[90%] md:w-200 h-150 bg-[white] shadow-xl rounded-2xl flex"
+        onSubmit={(e) => e.preventDefault()}
+      >
+        <div className="md:w-[50%] w-full h-full flex flex-col items-center justify-center gap-4 ">
+          <div>
+            <h1 className="font-semibold text-[black] text-2xl">
+              Welcome back
             </h1>
-
-            <label className="block mt-4 text-sm font-medium text-gray-700">
+            <h2 className="text-[#999797] text-[18px]">
+              Login to your account
+            </h2>
+          </div>
+          <div className="flex flex-col gap-1 w-[85%] items-start justify-center px-3">
+            <label htmlFor="email" className="font-semibold">
               Email
             </label>
             <input
-              type="email"
-              value={email}
+              id="email"
+              type="text"
+              className="border w-full h-[35px] border-[#e7e6e6] text-[15px] px-5"
+              placeholder="Your email"
               onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mt-2 w-full h-10 rounded border border-[#e7e6e6] px-3 focus:outline-none focus:ring-2 focus:ring-gray-200"
-              placeholder="you@example.com"
+              value={email}
             />
-
-            <label className="block mt-4 text-sm font-medium text-gray-700">
+          </div>
+          <div className="flex flex-col gap-1 w-[85%] items-start justify-center px-3 relative">
+            <label htmlFor="password" className="font-semibold">
               Password
             </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-2 w-full h-10 rounded border border-[#e7e6e6] px-3 pr-10 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                placeholder="Enter a password"
+            <input
+              id="password"
+              type={show ? "text" : "password"}
+              className="border w-full h-[35px] border-[#e7e6e6] text-[15px] px-5"
+              placeholder="***********"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+            {!show && (
+              <MdOutlineRemoveRedEye
+                className="absolute w-5 h-5 cursor-pointer right-[5%] bottom-[10%]"
+                onClick={() => setShow((prev) => !prev)}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword((s) => !s)}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500"
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
+            )}
+            {show && (
+              <MdRemoveRedEye
+                className="absolute w-5 h-5 cursor-pointer right-[5%] bottom-[10%]"
+                onClick={() => setShow((prev) => !prev)}
+              />
+            )}
+          </div>
+
+          <button
+            className="w-[80%] h-10 bg-black text-white cursor-pointer flex items-center justify-center rounded-[5px]"
+            disabled={loading}
+            onClick={handleLogin}
+          >
+            {loading ? <ClipLoader size={30} color="white" /> : "Login"}
+          </button>
+          <span
+            className="text-[13px] cursor-pointer text-[#585757]"
+            onClick={() => navigate("/forgotpassword")}
+          >
+            Forget your password?
+          </span>
+
+          <div className="w-[80%] flex items-center gap-2">
+            <div className="w-[25%] h-[0.5px] bg-[#c4c4c4]"></div>
+            <div className="w-[50%] text-[15px] text-[#999797] flex items-center justify-center ">
+              Or continue with
             </div>
+            <div className="w-[25%] h-[0.5px] bg-[#c4c4c4]"></div>
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              onClick={handleLogIn}
-              className="w-full mt-6 h-10 rounded bg-black text-white flex items-center justify-center disabled:opacity-60 cursor-pointer"
+          <div
+            className="w-[80%] h-10 border border-[#d3d2d2] rounded-[5px] flex items-center justify-center "
+           
+          >
+            <img src={google} alt="" className="w-[25px]" />
+            <span className="text-[18px] text-gray-500">oogle</span>{" "}
+          </div>
+          <div className="text-[#6f6f6f]">
+            Don't have an account?{" "}
+            <span
+              className="underline underline-offset-1 text-[black]"
+              onClick={() => navigate("/signup")}
             >
-              {loading ? "Getting..." : "Sign In"}
-            </button>
-
-            <span className="text-[13px] cursor-pointer text-[#585757] ml-80" 
-            onClick={() => navigate("/forget")} >
-             
-              Forget Password ?
+              Sign up
             </span>
-
-            <div className="flex items-center gap-3 mt-6">
-              <div className="flex-1 h-px bg-[#e3e3e3]" />
-              <div className="text-sm text-gray-500">Or continue with</div>
-              <div className="flex-1 h-px bg-[#e3e3e3]" />
-            </div>
-
-            <button
-              type="button"
-              className="w-full mt-4 h-10 rounded border flex items-center justify-center gap-3 cursor-pointer"
-            >
-              <FaGoogle />
-              Sign In with Google
-            </button>
-
-            <p className="text-sm text-gray-600 text-center mt-4">
-              Want to Create new Account?{" "}
-              <Link
-                to="/signup"
-                className="text-black underline cursor-pointer"
-              >
-                Sign Up
-              </Link>
-            </p>
-          </form>
+          </div>
         </div>
-      </div>
+        <div className="w-[50%] h-full rounded-r-2xl bg-[black] md:flex items-center justify-center flex-col hidden">
+          <img src={logo} className="w-30 shadow-2xl" alt="" />
+          <span className="text-[white] text-2xl">Edu Nation</span>
+        </div>
+      </form>
     </div>
   );
 }
+
+export default Login;
