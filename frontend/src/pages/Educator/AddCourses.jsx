@@ -135,8 +135,8 @@ const editCourseHandler = async () => {
      <div className="max-w-5xl mx-auto p-6 mt-10 bg-white rounded-lg shadow-md">
         
       {/* Top Bar */}
-      <div className="flex items-center justify-center gap-[20px] md:justify-between flex-col md:flex-row  mb-6 relative">
-        <FaArrowLeftLong  className='top-[-20%] md:top-[20%] absolute left-[0] md:left-[2%] w-[22px] h-[22px] cursor-pointer' onClick={()=>navigate("/courses")}/>
+      <div className="flex items-center justify-center gap-5 md:justify-between flex-col md:flex-row  mb-6 relative">
+        <FaArrowLeftLong  className='top-[-20%] md:top-[20%] absolute left-0 md:left-[2%] w-[22px] h-[22px] cursor-pointer' onClick={()=>navigate("/courses")}/>
         <h2 className="text-2xl font-semibold md:pl-[60px]">Add detail information regarding course</h2>
         <div className="space-x-2 space-y-2 ">
           <button className="bg-black text-white px-4 py-2 rounded-md" onClick={()=>navigate(`/createlecture/${selectedCourse?._id}`)}>Go to lectures page</button>
@@ -148,8 +148,8 @@ const editCourseHandler = async () => {
       <div className="bg-gray-50 p-6 rounded-md">
         <h3 className="text-lg font-medium mb-4">Basic Course Information</h3>
         <div className="space-x-2 space-y-2 ">
-          {!isPublished? <button className="bg-green-100 text-green-600 px-4 py-2 rounded-md border-1" onClick={()=>setIsPublished(prev=>!prev)}>Click to Publish</button> 
-          :<button className="bg-red-100 text-red-600 px-4 py-2 rounded-md border-1" onClick={()=>setIsPublished(prev=>!prev)}>Click to UnPublish</button>
+          {!isPublished? <button className="bg-green-100 text-green-600 px-4 py-2 rounded-md border" onClick={()=>setIsPublished(prev=>!prev)}>Click to Publish</button> 
+          :<button className="bg-red-100 text-red-600 px-4 py-2 rounded-md border" onClick={()=>setIsPublished(prev=>!prev)}>Click to UnPublish</button>
           }
           <button className="bg-red-600 text-white px-4 py-2 rounded-md" disabled={loading} onClick={removeCourse}>{loading?<ClipLoader size={30} color='white'/> :"Remove Course"}</button>
         </div>
@@ -218,12 +218,12 @@ const editCourseHandler = async () => {
           </div>
 
           <div  className='relative w-[300px]
-          h-[170px]'><img src={frontendImage} alt="" className='w-[100%]
-          h-[100%] border-1 border-black rounded-[5px]' onClick={()=>thumb.current.click()} />
-          <MdEdit className='w-[20px] h-[20px] absolute top-2 right-2  ' onClick={()=>thumb.current.click()}/> </div>
+          h-[170px]'><img src={frontendImage} alt="" className='w-full
+          h-full border border-black rounded-[5px]' onClick={()=>thumb.current.click()} />
+          <MdEdit className='w-5 h-5 absolute top-2 right-2  ' onClick={()=>thumb.current.click()}/> </div>
 
           <div className='flex items-center justify-start gap-[15px]'>
-            <button className='bg-[#e9e8e8] hover:bg-red-200 text-black border-1 border-black cursor-pointer px-4 py-2 rounded-md' onClick={()=>navigate("/courses")}>Cancel</button>
+            <button className='bg-[#e9e8e8] hover:bg-red-200 text-black border border-black cursor-pointer px-4 py-2 rounded-md' onClick={()=>navigate("/courses")}>Cancel</button>
             <button className='bg-black text-white px-7 py-2 rounded-md hover:bg-gray-500 cursor-pointer' disabled={loading} onClick={editCourseHandler}>{loading ? <ClipLoader size={30} color='white'/>:"Save"}</button>
             
           </div>

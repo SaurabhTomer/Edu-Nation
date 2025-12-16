@@ -42,7 +42,7 @@ function Courses() {
     <div className="flex min-h-screen bg-gray-100">
 
 
-      <div className="w-[100%] min-h-screen p-4 sm:p-6   bg-gray-100">
+      <div className="w-full min-h-screen p-4 sm:p-6   bg-gray-100">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3 ">
           <div className='flex items-center justify-center gap-3'><FaArrowLeftLong className=' w-[22px] h-[22px] cursor-pointer' onClick={() => navigate("/dashboard")} />
             <h1 className="text-xl font-semibold">Courses</h1>
@@ -127,7 +127,7 @@ function Courses() {
               </span>
             </div>
           ))}
-          <p className="text-center text-sm text-gray-400 mt-4 pl-[80px]">
+          <p className="text-center text-sm text-gray-400 mt-4 pl-20">
             A list of your recent courses.
           </p>
 
