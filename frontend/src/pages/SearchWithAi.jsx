@@ -58,7 +58,7 @@ function SearchWithAi() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black to-gray-900 text-white flex flex-col items-center px-4 py-16">
+    <div className="min-h-screen bg-linear-to-br from-black to-gray-900 text-white flex flex-col items-center px-4 py-16">
       
       {/* Search Container */}
       <div className="bg-white shadow-xl rounded-3xl p-6 sm:p-8 w-full max-w-2xl text-center relative">
@@ -72,7 +72,7 @@ function SearchWithAi() {
           
           <input
             type="text"
-            className="flex-grow px-4 py-3 bg-transparent text-white placeholder-gray-400 focus:outline-none text-sm sm:text-base"
+            className="grow px-4 py-3 bg-transparent text-white placeholder-gray-400 focus:outline-none text-sm sm:text-base"
             placeholder="What do you want to learn? (e.g. AI, MERN, Cloud...)"
             value={input}
             onChange={(e) => setInput(e.target.value)}
