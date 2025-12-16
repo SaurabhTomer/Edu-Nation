@@ -158,3 +158,62 @@ export const deleteCourse = async (req, res) => {
     return res.status(500).json({ message: "Course deletion error", error });
   }
 };
+
+
+export const createLecture = async (req , res) => {
+  try {
+    //fetch data from body
+    const {lectureTitle} = req.body;
+    //fecth courseId from params
+    const {courseId} = req.params;
+
+    //check
+    if( !lectureTitle || !courseId){
+      return res.status(400).json({message:"field is missing"})
+    }
+
+    //crate Lecture
+    const lecture = await Lecture.create({lectureTitle});
+    //find course by id
+    const course = await Course.findById(courseId);
+
+    // if course is present then push lecture in it
+    if(course){
+      course.lectures.push(lecture._id);
+    }
+    //get all details of kecture like all (ispublished , titile , vidoeurl)
+     await course.populate("lectures");
+    //save course 
+    await course.save();
+      return res.status(201).json({ lecture , course });
+  
+
+  } catch (error) {
+    return res.status(500).json({ message: "lecture create error", error });
+  }
+};
+
+export const getCourseLecture = async (req , res) => {
+  try {
+    //fecth courseId from params
+    const {courseId} = req.params;
+    //check
+    if( courseId){
+      return res.status(400).json({message:"course is required "})
+    }
+
+  const course = await Course.findById({courseId});
+   if( course){
+      return res.status(404).json({message:"course is not found "})
+    }
+//get all deatils of lecture
+    await  course.populate("lectures")
+    await course.save();
+  
+      return res.status(200).json({ course });
+  
+
+  } catch (error) {
+    return res.status(500).json({ message: "get course lecture  error", error });
+  }
+}
