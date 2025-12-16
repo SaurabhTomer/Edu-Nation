@@ -1,6 +1,7 @@
-import { Course, Course } from "../models/course.model.js";
+import { Course } from "../models/course.model.js";
+import { Lecture } from "../models/lecture.model.js";
 import { uploadOnCloudinary } from "./../config/claudinary.js";
-import { Course } from "./../models/course.model";
+
 
 export const createCourse = async (req, res) => {
   try {
@@ -252,3 +253,29 @@ export const editLecture = async (req, res) => {
       .json({ message: " lecture  edit  error", error });
   }
 };
+
+export const removeLecture = async (req, res) => {
+  try {
+    //fecth  from params
+    const { lectureId } = req.params;
+    
+    const lecture = await Lecture.findByIdAndDelete(lectureId);
+    if(!lecture){
+      return res.status(404).json({message:"Lecture is not found"})
+    }
+  
+
+  await Course.updateOne(
+
+    {lectures : lectureId},
+    {$pull:{lectures : lectureId}}
+
+  )
+    return res.status(200).json( {message:"lecture removed"} );
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: " lecture  remove  error", error });
+  }
+};
+
