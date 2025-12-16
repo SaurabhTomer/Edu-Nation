@@ -17,11 +17,14 @@ function CreateLecture() {
     const {lectureData} = useSelector(state=>state.lecture)
     
 
+
+    // function to create lecture
     const createLectureHandler = async () => {
       setLoading(true)
       try {
         const result = await axios.post(serverUrl + `/api/course/createlecture/${courseId}` ,{lectureTitle} , {withCredentials:true})
         console.log(result.data)
+        // result .data.lecture ko lecture data array k andr update kra dete h
       dispatch(setLectureData([...lectureData,result.data.lecture]))
         toast.success("Lecture Created")
         setLoading(false)
@@ -39,15 +42,11 @@ function CreateLecture() {
           const result = await axios.get(serverUrl + `/api/course/getcourselecture/${courseId}`,{withCredentials:true})
         console.log(result.data)
         dispatch(setLectureData(result.data.lectures))
-        
-
           
         } catch (error) {
            console.log(error)
         toast.error(error.response.data.message)
-        
-        }
-        
+        } 
       }
       getLecture()
     },[])
